@@ -22,7 +22,7 @@ class ActionBot:
     def _resolve_step_name(step_name: str | None, fallback: str) -> str:
         return step_name or fallback
 
-    def _wait_present(self, by: Locator) -> WebElement:
+    def _wait_present(self, by: Locator, timeout: int | None = None) -> WebElement:
         return self.wait.until(EC.presence_of_element_located(by))
 
     def _wait_clickable(self, by: Locator) -> WebElement:
@@ -58,10 +58,16 @@ class ActionBot:
             element.clear()
             element.send_keys(text)
 
-    def element_text(self, by: Locator, step_name: str | None = None) -> str:
+    def element_text(self, by: Locator, step_name: str | None = None, timeout: int | None = None) -> str:
         label = self._resolve_step_name(step_name, f'Get element text: {by}')
         with allure.step(label):
             return self._wait_present(by).text
+
+    def elements_texts(self, by: tuple, step_name: str | None = None) -> list[str]:
+        label = self._resolve_step_name(step_name, f'Get elements texts: {by}')
+        with allure.step(label):
+            elements = self.driver.find_elements(*by)
+            return [el.text for el in elements]
 
     def scroll_to_element(self, by: Locator, step_name: str | None = None) -> None:
         label = self._resolve_step_name(step_name, f'Scroll to element: {by}')
