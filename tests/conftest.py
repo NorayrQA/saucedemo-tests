@@ -1,7 +1,7 @@
 import pytest
 import allure
 from pages.saucedemo.login_page import LoginPage
-from utils import constans
+from utils import constants
 from utils.firefox_driver import get_firefox_driver
 from utils.chrome_driver import get_chrome_driver
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -61,9 +61,9 @@ def logged_in_driver(driver: WebDriver) -> WebDriver:
     If already logged in, skips login.
     """
     login_page = LoginPage(driver)
-    login_page.load_page()
+    login_page.open()
 
-    if not login_page.is_logged_in(2):
-        login_page.login(constans.LOGIN_USERNAME, constans.LOGIN_PASSWORD)
+    if not login_page.is_logged_in():
+        login_page.login(constants.LOGIN_USERNAME, constants.LOGIN_PASSWORD)
 
     return driver

@@ -1,17 +1,17 @@
-from selenium.common import TimeoutException
+import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
-from utils import constans
 
 class LoginPage(BasePage):
-    LOGIN_PAGE_URL = 'https://www.saucedemo.com/'
-    USERNAME = (By.ID, 'user-name')
-    PASSWORD = (By.ID, 'password')
-    LOGIN_BUTTON = (By.ID, 'login-button')
-    SUCCESS_LOGIN = (By.CLASS_NAME, 'app_logo')
+    URL = "https://www.saucedemo.com/"
+    USERNAME = (By.ID, "user-name")
+    PASSWORD = (By.ID, "password")
+    LOGIN_BUTTON = (By.ID, "login-button")
+    INVENTORY_CONTAINER = (By.ID, "inventory_container")
+    SUCCESS_MESSAGE = (By.CLASS_NAME, 'app_logo')
 
-    def load_page(self):
-        self.load(self.LOGIN_PAGE_URL)
+    def open(self):
+        self.load(self.URL)
 
     def type_username(self, username):
         self.bot.type(self.USERNAME, username)
@@ -22,21 +22,28 @@ class LoginPage(BasePage):
     def click_login_button(self):
         self.bot.click(self.LOGIN_BUTTON)
 
-    def get_success_message(self):
-        return self.bot.element_text(self.SUCCESS_LOGIN)
+    def is_inventory_page_opened(self) -> bool:
+        return (
+            "inventory" in self.driver.current_url and
+            self.is_element_present(self.INVENTORY_CONTAINER)
+        )
 
-    def login(self, username, password):
-        self.load_page()
-        self.type_username(username)
-        self.type_password(password)
-        self.click_login_button()
+    def is_logged_in(self, step_name: str | None = None) -> bool:
+        label = self._resolve_step_name(
+            step_name,
+            'Check if user is already logged in'
+        )
 
-    def is_logged_in(self, timeout: int | None = None) -> bool:
-        try:
-            text = self.bot.element_text(self.SUCCESS_LOGIN).strip()
-            return text == constans.SUCCESS_MESSAGE
-        except TimeoutException:
-            return False
+        with allure.step(label):
+            return self.is_inventory_page_opened()
 
+    def login(self, username, password, step_name: str | None = None):
+        label = self._resolve_step_name(
+            step_name,
+            f'Login as user: {username}'
+        )
 
-
+        with allure.step(label):
+            self.type_username(username)
+            self.type_password(password)
+            self.click_login_button()
