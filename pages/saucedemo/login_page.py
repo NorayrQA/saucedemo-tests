@@ -44,6 +44,11 @@ class LoginPage(BasePage):
         )
 
         with allure.step(label):
+            self.open()
             self.type_username(username)
             self.type_password(password)
             self.click_login_button()
+
+    def get_error_message(self, step_name: str | None = None) -> str | None:
+        return  self.bot.element_text(self.ERROR_MESSAGE, step_name)
+

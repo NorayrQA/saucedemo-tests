@@ -49,12 +49,7 @@ class ActionBot:
     def type(self, by: Locator, text: str, step_name: str | None = None) -> None:
         label = self._resolve_step_name(step_name, f'Type text into element: {by}')
         with allure.step(label):
-            self._wait_present(by).send_keys(text)
-
-    def clear_and_type(self, by: Locator, text: str, step_name: str | None = None) -> None:
-        label = self._resolve_step_name(step_name, f'Clear and type text into element: {by}')
-        with allure.step(label):
-            element = self._wait_present(by)
+            element = self._wait_clickable(by)
             element.clear()
             element.send_keys(text)
 
