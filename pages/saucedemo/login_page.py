@@ -9,6 +9,7 @@ class LoginPage(BasePage):
     LOGIN_BUTTON = (By.ID, "login-button")
     INVENTORY_CONTAINER = (By.ID, "inventory_container")
     SUCCESS_MESSAGE = (By.CLASS_NAME, 'app_logo')
+    ERROR_MESSAGE = (By.CSS_SELECTOR, '[data-test="error"]')
 
     def open(self):
         self.load(self.URL)

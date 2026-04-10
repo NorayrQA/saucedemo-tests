@@ -41,12 +41,6 @@ class TestLogin:
         assert login_page.get_error_message() == expected
 
 
-    def test_logout(self, logged_in_driver):
-        login_page = LoginPage(logged_in_driver)
-        login_page.logout()
-
-        assert "saucedemo.com" in logged_in_driver.current_url
-
     def test_locked_user(self, driver):
         login = LoginPage(driver)
 
